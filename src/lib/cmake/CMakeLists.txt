@@ -1,0 +1,9 @@
+set(IS_ON_LINUX_X86 FALSE CACHE INTERNAL "" FORCE)
+
+if ("${BUILD_INFO_TOOLCHAIN}" STREQUAL "linux-x86-gcc")
+    set(IS_ON_LINUX_X86 TRUE CACHE INTERNAL "" FORCE)
+elseif ("${BUILD_INFO_TOOLCHAIN}" STREQUAL "linux-x86-clang")
+    set(IS_ON_LINUX_X86 FALSE CACHE INTERNAL "" FORCE)
+else ()
+    message(FATAL_ERROR "Toolchain '${BUILD_INFO_TOOLCHAIN}' is not supported")
+endif()

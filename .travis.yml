@@ -4,4 +4,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq cmake
 
-script: make
+compiler:
+  - clang
+  - gcc
+
+script: make build_linux-x86-$CC

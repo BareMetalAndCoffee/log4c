@@ -12,13 +12,8 @@ all: clean build test package
 .PHONY: package
 
 clean:
-	rm -rf bld
+	rm -rf $(BUILD_DIR)
 
-build: $(BUILD_DIR)/Makefile
-	$(MAKE) -C $(BUILD_DIR)
-
-$(BUILD_DIR)/Makefile:
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && \
-       cmake -G "Unix Makefiles" $(SOURCE_DIR)
-
+include $(SOURCE_DIR)/lib/make/generic_build_targets.mk
+$(eval $(call GENERIC_BUILD_TGT,linux-x86-gcc))
+$(eval $(call GENERIC_BUILD_TGT,linux-x86-clang))
