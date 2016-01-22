@@ -137,3 +137,33 @@ void Log4C_Debug(char *fmt, ...)
     writeMessageToBuffer(LOG4C_DEBUG_STR, fmt, args);
     va_end(args);
 }
+
+bool Log4C_IsCharAvaliable(void)
+{
+    uint32_t count = 0;
+    LOG4C_ENTER_CRIT_SECTION;
+    count = LOG.prv->count;
+    LOG4C_EXIT_CRIT_SECTION;
+    return count > 0;
+}
+
+char Log4C_GetNextChar(void)
+{
+    char character = '\0';
+    LOG4C_ENTER_CRIT_SECTION;
+    character = LOG.prv->buffer[LOG.prv->out];
+    if (LOG.prv->out >= LOG4C_BUFFER_SIZE - 1)
+    {
+        LOG.prv->out = 0;
+    }
+    else
+    {
+        LOG.prv->out++;
+    }
+    if (LOG.prv->count > 0)
+    {
+        LOG.prv->count--;
+    }
+    LOG4C_EXIT_CRIT_SECTION;
+    return character;
+}

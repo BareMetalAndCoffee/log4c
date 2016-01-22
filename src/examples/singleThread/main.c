@@ -16,6 +16,7 @@
  */
 #include <log4c.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int main(void)
 {
@@ -23,6 +24,17 @@ int main(void)
     LOG.warning("Okay I am a hot pie. You have been warned %d times.\n", -23);
     LOG.info("I am %s. Talk to the %s....\n", "TERMINAL", "KEYBOARD");
     LOG.debug("I like to fill up %s %u times.\n", "log files", 100000);
+
+    while (Log4C_IsCharAvaliable())
+    {
+        printf("%c", Log4C_GetNextChar());
+    }
+
+    printf("LOG STATS:\n");
+    printf("LOG.stats.buffer.size:          %u\n", LOG.stats.buffer.size);
+    printf("LOG.stats.buffer.highWaterMark: %u\n", LOG.stats.buffer.highWaterMark);
+    printf("LOG.stats.buffer.overruns:      %u\n", LOG.stats.buffer.overruns);
+    printf("LOG.stats.message.overruns:     %u\n", LOG.stats.message.overruns);
 
     return EXIT_SUCCESS;
 }
