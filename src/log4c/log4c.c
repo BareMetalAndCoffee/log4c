@@ -15,6 +15,7 @@
  * along with Log4C.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "log4c.h"
+#include "log4c_port.h"
 
 #include <stdio.h>
 #include <stdarg.h>

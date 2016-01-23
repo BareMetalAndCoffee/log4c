@@ -1,3 +1,3 @@
 project(EXAMPLES)
 
-add_subdirectory(singleThread)
+add_subdirectory(posix)
