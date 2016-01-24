@@ -93,7 +93,7 @@ static void writeMessageToBuffer(char *fmt, va_list *args)
 {
     char message[LOG4C_MAX_MESSAGE_SIZE];
     {
-        int characterWritten; = vsprintf(message, fmt, *args);
+        int characterWritten = vsprintf(message, fmt, *args);
 
         LO4C_ASSERT(characterWritten > LOG4C_MAX_MESSAGE_SIZE);
         if (characterWritten > LOG4C_MAX_MESSAGE_SIZE)

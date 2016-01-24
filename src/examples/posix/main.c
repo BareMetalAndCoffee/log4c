@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sched.h>
 #include <unistd.h>
 
 /**
@@ -33,26 +34,46 @@ static void *posixUart(void *arg)
         {
             printf("%c", Log4C_GetNextChar());
         }
+        (void) sched_yield();
     }
     pthread_exit(NULL);
 }
+
+/**
+ * A thread in an application logging stuff.
+ */
+static void *applicationThread(void *arg)
+{
+    bool *alive = (bool *) arg;
+    while(*alive)
+    {
+        // While the program is active log some stuff. 
+        LOG.error("Hello world! I am error number %u.\n", (uint32_t) 22);
+        LOG.warning("Okay I am a hot pie. You have been warned %d times.\n", (int32_t) -23);
+        LOG.info("I am %s. Talk to the %s....\n", "TERMINAL", "KEYBOARD");
+        LOG.debug("I like to fill up %s %u times.\n", "log files", (uint32_t) 100000);
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
+
 
 int main(void)
 {
     bool applicationActive = true;
     pthread_t fakeUartThread;
+    pthread_t fakeApplicationThread;
 
     if (pthread_create(&fakeUartThread, NULL, posixUart, &applicationActive))
     {
         return EXIT_FAILURE;
     }
+    if (pthread_create(&fakeApplicationThread, NULL, applicationThread, &applicationActive))
+    {
+        return EXIT_FAILURE;
+    }
 
-    // While the program is active log some stuff. 
-    LOG.error("Hello world! I am error number %u.\n", (uint32_t) 22);
-    LOG.warning("Okay I am a hot pie. You have been warned %d times.\n", (int32_t) -23);
-    LOG.info("I am %s. Talk to the %s....\n", "TERMINAL", "KEYBOARD");
-    LOG.debug("I like to fill up %s %u times.\n", "log files", (uint32_t) 100000);
-    sleep(1);
+    sleep(5);
 
     // So the program wants to shut down. Lets see the stats before we go.
     applicationActive = false;
@@ -60,8 +81,13 @@ int main(void)
     {
         return EXIT_FAILURE;
     }
+    if (pthread_join(fakeApplicationThread, NULL))
+    {
+        return EXIT_FAILURE;
+    }
 
-    printf("LOG STATS:\n");
+    fflush(stdout);
+    printf("\n\nLOG STATS:\n");
     printf("LOG.stats.buffer.size:          %u\n", LOG.stats.buffer.size);
     printf("LOG.stats.buffer.highWaterMark: %u\n", LOG.stats.buffer.highWaterMark);
     printf("LOG.stats.buffer.overruns:      %u\n", LOG.stats.buffer.overruns);
