@@ -48,10 +48,10 @@ int main(void)
     }
 
     // While the program is active log some stuff. 
-    LOG.error("Hello world! I am error number %u.\n", 22);
-    LOG.warning("Okay I am a hot pie. You have been warned %d times.\n", -23);
+    LOG.error("Hello world! I am error number %u.\n", (uint32_t) 22);
+    LOG.warning("Okay I am a hot pie. You have been warned %d times.\n", (int32_t) -23);
     LOG.info("I am %s. Talk to the %s....\n", "TERMINAL", "KEYBOARD");
-    LOG.debug("I like to fill up %s %u times.\n", "log files", 100000);
+    LOG.debug("I like to fill up %s %u times.\n", "log files", (uint32_t) 100000);
     sleep(1);
 
     // So the program wants to shut down. Lets see the stats before we go.

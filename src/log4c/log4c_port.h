@@ -85,4 +85,6 @@ bool Log4C_IsCharAvaliable(void);
  */
 char Log4C_GetNextChar(void);
 
+#define LO4C_ASSERT(cond_)
+
 #endif /* LOG4C_PORT_H */

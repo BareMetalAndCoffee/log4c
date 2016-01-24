@@ -1,16 +1,16 @@
 /**
  * This file is part of Log4C.
- * 
+ *
  * Log4C is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Log4C is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Log4C.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,16 +64,15 @@ static inline void writeToBuffer(char *str)
         int i = 0;
         while (str[i] != '\0')
         {
-            LOG.prv->buffer[LOG.prv->in] = str[i++];
-            if (LOG.prv->in >= LOG4C_BUFFER_SIZE - 1)
+            LOG.prv->buffer[LOG.prv->in] = str[i];
+            LOG.prv->in++;
+            i++;
+
+            if (LOG.prv->in > LOG4C_BUFFER_SIZE - 1)
             {
                 LOG.prv->in = 0;
             }
-            else
-            {
-                LOG.prv->in++;
-            }
-            if (LOG.prv->count >= LOG4C_BUFFER_SIZE - 1)
+            if (LOG.prv->count > LOG4C_BUFFER_SIZE - 1)
             {
                 LOG.stats.buffer.overruns++;
             }
@@ -87,22 +86,21 @@ static inline void writeToBuffer(char *str)
             }
         }
     }
-    LOG4C_EXIT_CRIT_SECTION; 
+    LOG4C_EXIT_CRIT_SECTION;
 }
 
-static inline void writeMessageToBuffer(char *prefix, char *fmt, ...)
+static void writeMessageToBuffer(char *fmt, va_list *args)
 {
     char message[LOG4C_MAX_MESSAGE_SIZE];
     {
-        va_list args;
-        va_start(args, fmt);
-        if (vsnprintf(message, LOG4C_MAX_MESSAGE_SIZE, fmt, args) > LOG4C_MAX_MESSAGE_SIZE)
+        int characterWritten; = vsprintf(message, fmt, *args);
+
+        LO4C_ASSERT(characterWritten > LOG4C_MAX_MESSAGE_SIZE);
+        if (characterWritten > LOG4C_MAX_MESSAGE_SIZE)
         {
-           LOG.stats.message.overruns++; 
+           LOG.stats.message.overruns++;
         }
-        va_end(args);
     }
-    writeToBuffer(prefix);
     writeToBuffer(message);
 }
 
@@ -110,7 +108,8 @@ void Log4C_Error(char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    writeMessageToBuffer(LOG4C_ERROR_STR, fmt, args);
+    writeToBuffer(LOG4C_ERROR_STR);
+    writeMessageToBuffer(fmt, &args);
     va_end(args);
 }
 
@@ -118,7 +117,8 @@ void Log4C_Warning(char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    writeMessageToBuffer(LOG4C_WARNING_STR, fmt, args);
+    writeToBuffer(LOG4C_WARNING_STR);
+    writeMessageToBuffer(fmt, &args);
     va_end(args);
 }
 
@@ -126,7 +126,8 @@ void Log4C_Info(char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    writeMessageToBuffer(LOG4C_INFO_STR, fmt, args);
+    writeToBuffer(LOG4C_INFO_STR);
+    writeMessageToBuffer(fmt, &args);
     va_end(args);
 
 }
@@ -135,7 +136,8 @@ void Log4C_Debug(char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    writeMessageToBuffer(LOG4C_DEBUG_STR, fmt, args);
+    writeToBuffer(LOG4C_DEBUG_STR);
+    writeMessageToBuffer(fmt, &args);
     va_end(args);
 }
 
@@ -153,13 +155,10 @@ char Log4C_GetNextChar(void)
     char character = '\0';
     LOG4C_ENTER_CRIT_SECTION;
     character = LOG.prv->buffer[LOG.prv->out];
-    if (LOG.prv->out >= LOG4C_BUFFER_SIZE - 1)
+    LOG.prv->out++;
+    if (LOG.prv->out > LOG4C_BUFFER_SIZE - 1)
     {
         LOG.prv->out = 0;
-    }
-    else
-    {
-        LOG.prv->out++;
     }
     if (LOG.prv->count > 0)
     {
