@@ -18,6 +18,9 @@
 #define LOG4C_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
+typedef struct Log4CInternal_t *const Log4C_Private;
 
 typedef struct
 {
@@ -31,13 +34,21 @@ typedef struct
         {
             uint32_t size;
             uint32_t highWaterMark;
+            uint32_t overruns;
         } buffer;
+        struct
+        {
+            uint32_t overruns;
+        } message;
     } stats;
+    Log4C_Private prv;
 } Log4C_t;
 
 /**
  * Global instance of Log4C. Assuming this module has been ported correctly
  * this global object can be used at any time.
+ *
+ * Please see porting instructions.
  */
 extern Log4C_t LOG;
 
