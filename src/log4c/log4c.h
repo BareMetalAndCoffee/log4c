@@ -20,19 +20,53 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/**
+ * Private structure - enabling OOP paradigm
+ */
 typedef struct Log4CInternal_t *const Log4C_Private;
 
+/**
+ * OOP Log4C structure.
+ */
 typedef struct
 {
-    void (*error)(char *fmt, ...);
-    void (*warning)(char *fmt, ...);
-    void (*info)(char *fmt, ...);
-    void (*debug)(char *fmt, ...);
+    /**
+     * Methods that can be called by singleton LOG instance. These can be
+     * overriden to complete custom behaviour. However, read the porting
+     * guide to see if you can get what you want out of an existing port. 
+     */
+    void (*const error)(char *fmt, ...);
+    void (*const warning)(char *fmt, ...);
+    void (*const info)(char *fmt, ...);
+    void (*const debug)(char *fmt, ...);
+
+    /**
+     * This function can be used in conjuction with LOG.getNextChar to print
+     * out characters in the log buffer.
+     * 
+     * @return
+     *      True if a character is avaliable, otherwise false
+     */
+    bool (*const isCharAvaliable)(void);
+
+    /**
+     * This function needs to be called to get the next character from the log. 
+     * It is the responsibility of the implementor to call this function faster
+     * that the log buffer fills up.
+     * 
+     * @return
+     *      The next character from the log to print.
+     */
+    char (*const getNextChar)(void);
+
+    /**
+     * Public members of Log4C. Can be called at anytime to get a value.
+     */
     struct
     {
         struct
         {
-            uint32_t size;
+            const uint32_t size;
             uint32_t highWaterMark;
             uint32_t overruns;
         } buffer;
@@ -41,6 +75,10 @@ typedef struct
             uint32_t overruns;
         } message;
     } stats;
+
+    /**
+     * Private members of Log4C. These can not be modified by outsiders....
+     */
     Log4C_Private prv;
 } Log4C_t;
 
