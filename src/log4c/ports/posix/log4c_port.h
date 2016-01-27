@@ -17,34 +17,30 @@
 #ifndef LOG4C_PORT_H
 #define LOG4C_PORT_H
 
-
 /**
- * Porting values
- * 
- * Any of these defintions can be overwritten via compiler defintions
+ * Define the ring buffer and max log message size.
  */
-#ifndef LOG4C_BUFFER_SIZE
-#define LOG4C_BUFFER_SIZE       (500)
-#endif
-
-#ifndef LOG4C_MAX_MESSAGE_SIZE
+#define LOG4C_BUFFER_SIZE       (1024)
 #define LOG4C_MAX_MESSAGE_SIZE  (LOG4C_BUFFER_SIZE / 5)
-#endif
 
 /**
- * Critical section functions must be provided for multi-threaded mode to 
- * ensure that the internal ring buffer does not overflow or get corrupted.
- * 
- * Please see porting examples for what to define in this section.
+ * Using mutex to provide critical section protection when using POSIX.
  */
-#ifndef LOG4C_ENTER_CRIT_SECTION
-#define LOG4C_ENTER_CRIT_SECTION
-#endif
+#include <pthread.h>
+extern pthread_mutex_t LOG4C_POSIX_MUTEX;
+#define LOG4C_ENTER_CRIT_SECTION    pthread_mutex_lock(&LOG4C_POSIX_MUTEX);
+#define LOG4C_EXIT_CRIT_SECTION     pthread_mutex_unlock(&LOG4C_POSIX_MUTEX);
 
-#ifndef LOG4C_EXIT_CRIT_SECTION
-#define LOG4C_EXIT_CRIT_SECTION
-#endif
+/**
+ * Define an initialisation function for POSIX.
+ */
+extern void Log4C_PosixPortInitialisation(void);
+#define LOG4C_PORT_INITIALISATION Log4C_PosixPortInitialisation
 
-#define LO4C_ASSERT(cond_)
+/**
+ * Using standard assert for POSIX port.
+ */
+#include <assert.h>
+#define LOG4C_ASSERT(cond_) assert((cond_))
 
 #endif /* LOG4C_PORT_H */

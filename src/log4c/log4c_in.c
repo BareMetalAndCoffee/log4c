@@ -27,6 +27,7 @@ static inline void writeMessageToBuffer(char *fmt, va_list *args);
 void Log4cIn_LogErrorMessage(char *fmt, ...)
 {
     va_list args;
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     va_start(args, fmt);
     writeToBuffer("ERROR: ");
     writeMessageToBuffer(fmt, &args);
@@ -36,6 +37,7 @@ void Log4cIn_LogErrorMessage(char *fmt, ...)
 void Log4cIn_LogWarningMessage(char *fmt, ...)
 {
     va_list args;
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     va_start(args, fmt);
     writeToBuffer("WARNING: ");
     writeMessageToBuffer(fmt, &args);
@@ -45,6 +47,7 @@ void Log4cIn_LogWarningMessage(char *fmt, ...)
 void Log4cIn_LogInfoMessage(char *fmt, ...)
 {
     va_list args;
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     va_start(args, fmt);
     writeToBuffer("INFO: ");
     writeMessageToBuffer(fmt, &args);
@@ -55,6 +58,7 @@ void Log4cIn_LogInfoMessage(char *fmt, ...)
 void Log4cIn_LogDebugMessage(char *fmt, ...)
 {
     va_list args;
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     va_start(args, fmt);
     writeToBuffer("DEBUG: ");
     writeMessageToBuffer(fmt, &args);
@@ -97,10 +101,10 @@ static inline void writeMessageToBuffer(char *fmt, va_list *args)
 {
     char message[LOG4C_MAX_MESSAGE_SIZE];
     {
-        int characterWritten = vsprintf(message, fmt, *args);
+        int charactersWritten = vsnprintf(message, LOG4C_MAX_MESSAGE_SIZE, fmt, *args);
 
-        LO4C_ASSERT(characterWritten > LOG4C_MAX_MESSAGE_SIZE);
-        if (characterWritten > LOG4C_MAX_MESSAGE_SIZE)
+        LOG4C_ASSERT(charactersWritten < LOG4C_MAX_MESSAGE_SIZE);
+        if (charactersWritten > LOG4C_MAX_MESSAGE_SIZE)
         {
            LOG.stats.message.overruns++;
         }

@@ -12,5 +12,6 @@ add_library(log4c
     log4c_in.h
     log4c_out.c
     log4c_out.h
+    ports/posix/log4c_port.c
     ports/posix/log4c_port.h
 )

@@ -64,6 +64,8 @@ int main(void)
     pthread_t fakeUartThread;
     pthread_t fakeApplicationThread;
 
+    LOG.initialise();
+
     if (pthread_create(&fakeUartThread, NULL, posixUart, &applicationActive))
     {
         return EXIT_FAILURE;

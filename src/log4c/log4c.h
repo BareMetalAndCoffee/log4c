@@ -31,6 +31,11 @@ typedef struct Log4CInternal_t *const Log4C_Private;
 typedef struct
 {
     /**
+     * Not all ports... 
+     */
+    void (*const initialise)(void);
+    
+    /**
      * Methods that can be called by singleton LOG instance. These can be
      * overriden to complete custom behaviour. However, read the porting
      * guide to see if you can get what you want out of an existing port. 
