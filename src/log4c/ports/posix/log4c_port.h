@@ -23,27 +23,6 @@
  * 
  * Any of these defintions can be overwritten via compiler defintions
  */
-#ifndef LOG4C_ERROR_STR
-#define LOG4C_ERROR_STR         "ERROR: "
-#endif
-
-#ifndef LOG4C_WARNING_STR
-#define LOG4C_WARNING_STR       "WARNING: "
-#endif
-
-#ifndef LOG4C_INFO_STR
-#define LOG4C_INFO_STR          "INFO: "
-#endif
-
-#ifndef LOG4C_DEBUG_STR
-#define LOG4C_DEBUG_STR         "DEBUG: "
-#endif
-
-/**
- * Porting values
- * 
- * Any of these defintions can be overwritten via compiler defintions
- */
 #ifndef LOG4C_BUFFER_SIZE
 #define LOG4C_BUFFER_SIZE       (500)
 #endif
@@ -65,25 +44,6 @@
 #ifndef LOG4C_EXIT_CRIT_SECTION
 #define LOG4C_EXIT_CRIT_SECTION
 #endif
-
-/**
- * This function can be used in conjuction with Log4C_GetNextChar to print
- * out characters in the log buffer.
- * 
- * @return
- *      True if a character is avaliable, otherwise false
- */
-bool Log4C_IsCharAvaliable(void);
-
-/**
- * This function needs to be called to get the next character from the log. 
- * It is the responsibility of the implementor to call this function faster
- * that the log buffer fills up.
- * 
- * @return
- *      The next character from the log to print.
- */
-char Log4C_GetNextChar(void);
 
 #define LO4C_ASSERT(cond_)
 
