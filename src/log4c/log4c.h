@@ -41,6 +41,25 @@ typedef struct
     void (*const debug)(char *fmt, ...);
 
     /**
+     * This function can be used in conjuction with LOG.getNextChar to print
+     * out characters in the log buffer.
+     * 
+     * @return
+     *      True if a character is avaliable, otherwise false
+     */
+    bool (*const isCharAvaliable)(void);
+
+    /**
+     * This function needs to be called to get the next character from the log. 
+     * It is the responsibility of the implementor to call this function faster
+     * that the log buffer fills up.
+     * 
+     * @return
+     *      The next character from the log to print.
+     */
+    char (*const getNextChar)(void);
+
+    /**
      * Public members of Log4C. Can be called at anytime to get a value.
      */
     struct
@@ -70,24 +89,5 @@ typedef struct
  * Please see porting instructions.
  */
 extern Log4C_t LOG;
-
-/**
- * This function can be used in conjuction with Log4C_GetNextChar to print
- * out characters in the log buffer.
- * 
- * @return
- *      True if a character is avaliable, otherwise false
- */
-bool Log4C_IsCharAvaliable(void);
-
-/**
- * This function needs to be called to get the next character from the log. 
- * It is the responsibility of the implementor to call this function faster
- * that the log buffer fills up.
- * 
- * @return
- *      The next character from the log to print.
- */
-char Log4C_GetNextChar(void);
 
 #endif /* LOG4C_H */

@@ -16,6 +16,7 @@
  */
 #include "log4c.h"
 #include "log4c_in.h"
+#include "log4c_out.h"
 #include "log4c_prv.h"
 #include <log4c_port.h>
 
@@ -31,6 +32,8 @@ Log4C_t LOG = {
     .warning = Log4cIn_LogWarningMessage,
     .info = Log4cIn_LogInfoMessage,
     .debug = Log4cIn_LogDebugMessage,
+    .isCharAvaliable = Log4cOut_IsCharAvaliable,
+    .getNextChar = Log4cOut_GetNextChar,
     .stats = {
         .buffer = {
             .size = LOG4C_BUFFER_SIZE,

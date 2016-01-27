@@ -30,9 +30,9 @@ static void *posixUart(void *arg)
     bool *alive = (bool *) arg;
     while(*alive)
     {
-        while (Log4C_IsCharAvaliable())
+        while (LOG.isCharAvaliable())
         {
-            printf("%c", Log4C_GetNextChar());
+            printf("%c", LOG.getNextChar());
         }
         (void) sched_yield();
     }
