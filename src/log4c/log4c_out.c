@@ -22,6 +22,7 @@
 bool Log4cOut_IsCharAvaliable(void)
 {
     uint32_t count = 0;
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     LOG4C_ENTER_CRIT_SECTION;
     count = LOG.prv->count;
     LOG4C_EXIT_CRIT_SECTION;
@@ -31,6 +32,7 @@ bool Log4cOut_IsCharAvaliable(void)
 char Log4cOut_GetNextChar(void)
 {
     char character = '\0';
+    LOG4C_ASSERT(LOG.prv->isInitialised);
     LOG4C_ENTER_CRIT_SECTION;
     character = LOG.prv->buffer[LOG.prv->out];
     LOG.prv->out++;
